@@ -26,7 +26,10 @@
 - POST /signup accepts a json body or a form with username and password fields and creates them in the db
 - POST /signin accepts a username and password in basic auth headers (url encoded password)
 - GET /users will list all the users given a valid login token
-- POST /
+- GET /secret will allow the user in with a valid login token
+
+NOTE: jwt tokens expire in 24 hours
+
 #### Tests
 
 - `npm test`
@@ -40,4 +43,6 @@
 
 #### UML
 
-![UML Diagram](assets/uml.png)
+![Basic Auth UML Diagram](assets/auth-uml.png)
+
+TODO: ![Bearer Auth UML Diagram](assets/uml.png)
