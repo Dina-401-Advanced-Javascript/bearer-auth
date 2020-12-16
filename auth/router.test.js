@@ -1,10 +1,8 @@
 'use strict';
 
-process.env.SECRET = "toes";
-
-const server = require('../../../src/server.js').server;
+const {server} = require('../src/server');
 const supergoose = require('@code-fellows/supergoose');
-const bearer = require('../../../src/auth/middleware/bearer.js');
+const bearerAuthMiddleware = require('../src/auth/middleware/bearer.js');
 
 const mockRequest = supergoose(server);
 
@@ -25,7 +23,7 @@ describe('Auth Router', () => {
         const response = await mockRequest.post('/signup').send(users[userType]);
         const userObject = response.body;
 
-        expect(response.status).toBe(201);
+        expect(response.status).toBe(200);
         expect(userObject.token).toBeDefined();
         expect(userObject.user._id).toBeDefined();
         expect(userObject.user.username).toEqual(users[userType].username)

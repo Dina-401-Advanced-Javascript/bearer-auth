@@ -5,13 +5,16 @@ const User = require('../models/users.js');
 
 module.exports = async (req, res, next) => {
 
-  if (!req.headers.authorization) { return _authError(); }
-
-  let basic = req.headers.authorization;
-  let [user, pass] = base64.decode(basic).split(':');
+  if (!req.headers.authorization) {
+    res.status(403).send('No Login Info Provided');
+    //return _authError(); 
+  }
 
   try {
-    req.user = await User.authenticateBasic(user, pass)
+    let basic = req.headers.authorization.split(' ').pop();
+    let [username, password] = base64.decode(basic).split(':');
+
+    req.user = await User.authenticateBasic(username, password);
     next();
   } catch (e) {
     res.status(403).send('Invalid Login');
