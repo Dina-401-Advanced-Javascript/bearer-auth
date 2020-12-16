@@ -1,8 +1,8 @@
 'use strict';
 
 require('@code-fellows/supergoose');
-const middleware = require('../../../src/auth/middleware/basic.js');
-const Users = require('../../../src/auth/models/users.js');
+const basicAuthMiddleware = require('../src/auth/middleware/basic.js');
+const Users = require('../src/auth/models/users.js');
 
 let users = {
   admin: { username: 'admin', password: 'password' },
@@ -36,7 +36,7 @@ describe('Auth Middleware', () => {
         authorization: 'Basic YWRtaW46Zm9v',
       };
 
-      return middleware(req, res, next)
+      basicAuthMiddleware(req, res, next)
         .then(() => {
           expect(next).not.toHaveBeenCalled();
           expect(res.status).toHaveBeenCalledWith(403);
@@ -44,14 +44,14 @@ describe('Auth Middleware', () => {
 
     }); // it()
 
-    it('logs in an admin user with the right credentials', () => {
+    it('logs in an admin user with the right credentials', async () => {
 
       // Change the request to match this test case
       req.headers = {
         authorization: 'Basic YWRtaW46cGFzc3dvcmQ=',
       };
 
-      return middleware(req, res, next)
+      return basicAuthMiddleware(req, res, next)
         .then(() => {
           expect(next).toHaveBeenCalledWith();
         });

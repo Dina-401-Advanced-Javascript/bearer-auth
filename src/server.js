@@ -4,6 +4,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const mongoose = require('mongoose');
 
 // Esoteric Resources
 const errorHandler = require('./error-handlers/500.js');
@@ -24,14 +25,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(authRoutes);
 
 // Catchalls
-app.use(notFound);
+app.use('*',notFound);
 app.use(errorHandler);
 
 module.exports = {
   server: app,
-  startup: (port) => {
-    app.listen(port, () => {
-      console.log(`Server Up on ${port}`);
-    });
+  start: (port,mongoDB) => {
+    if (port) {
+      mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
+          .then(() => {
+              app.listen(port, () => console.log('Server is up on port ', port));
+          })
+          .catch(error => console.error('Could not start server', error.message));
+  }
+  else throw new Error('no port provided');
   },
 };

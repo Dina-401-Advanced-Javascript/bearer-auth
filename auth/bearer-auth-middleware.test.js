@@ -1,10 +1,9 @@
 'use strict';
 
-process.env.SECRET = "toes";
-
+require('dotenv').config();
 require('@code-fellows/supergoose');
-const middleware = require('../../../src/auth/middleware/bearer.js');
-const Users = require('../../../src/auth/models/users.js');
+const bearerAuthMiddleware = require('../src/auth/middleware/bearer.js');
+const Users = require('../src/auth/models/users.js');
 const jwt = require('jsonwebtoken')
 
 let users = {
@@ -35,7 +34,7 @@ describe('Auth Middleware', () => {
         authorization: 'Bearer thisisabadtoken',
       };
 
-      return middleware(req, res, next)
+      return bearerAuthMiddleware(req, res, next)
         .then(() => {
           expect(next).not.toHaveBeenCalled();
           expect(res.status).toHaveBeenCalledWith(403);
@@ -52,7 +51,7 @@ describe('Auth Middleware', () => {
         authorization: `Bearer ${token}`,
       };
 
-      return middleware(req, res, next)
+      return bearerAuthMiddleware(req, res, next)
         .then(() => {
           expect(next).toHaveBeenCalledWith();
         });
