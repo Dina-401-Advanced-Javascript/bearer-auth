@@ -5,7 +5,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const SECRET = process.env.SECRET;
+const SECRET = process.env.SECRET?process.env.SECRET:'toes';
 
 const users = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
@@ -31,6 +31,7 @@ users.pre('save', async function () {
 users.statics.authenticateBasic = async function (username, password) {
   const user = await this.findOne({ username });
   const valid = await bcrypt.compare(password, user.password);
+  //console.log('valid =========',valid);
   if (valid) { return user; }
   throw new Error('Invalid User');
 }
